@@ -1,10 +1,10 @@
 import { setUser, readConfig } from "./config"
 
-export type CommandHandler = (cmdName: string, ...args: string[]) => void;
+export type CommandHandler = (cmdName: string, ...args: string[]) => Promise<void>;
 export type CommandsRegistry = Record<string, CommandHandler>;
 
 
-export function handlerLogin (_cmdName: string, ...args: string[]): void {
+export async function handlerLogin (_cmdName: string, ...args: string[]): Promise<void> {
   if (args.length === 0) {
     throw new Error("Missing argument, username is required");
   }
@@ -13,14 +13,14 @@ export function handlerLogin (_cmdName: string, ...args: string[]): void {
   console.log(`Current user has been set to ${args[0]}`);
 }
 
-export function registerCommand(registry: CommandsRegistry, cmdName: string, handler: CommandHandler): void {
+export async function registerCommand(registry: CommandsRegistry, cmdName: string, handler: CommandHandler): Promise<void> {
   registry[cmdName] = handler;
 }
 
-export function runCommand(registry: CommandsRegistry, cmdName: string, ...args: string[]): void {
+export async function runCommand(registry: CommandsRegistry, cmdName: string, ...args: string[]): Promise<void> {
   const commandHandler = registry[cmdName];
   if (!commandHandler) {
     throw new Error(`Unknown command: ${cmdName}`);
   }
-  commandHandler(cmdName, ...args);
+  await commandHandler(cmdName, ...args);
 }
