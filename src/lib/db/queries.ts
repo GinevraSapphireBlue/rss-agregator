@@ -20,3 +20,10 @@ export async function getUser(name: string): Promise<User | undefined> {
     .where(eq(users.name, name));
   return result;
 }
+
+export async function deleteAllUsers(): Promise<boolean> {
+  const result = await db
+    .delete(users)
+    .returning();
+  return result.length > 0
+}
