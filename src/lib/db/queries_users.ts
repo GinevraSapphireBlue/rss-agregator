@@ -21,6 +21,14 @@ export async function getUser(name: string): Promise<User | undefined> {
   return result;
 }
 
+export async function getUserById(userId: string): Promise<User> {
+  const [result] = await db
+    .select()
+    .from(users)
+    .where(eq(users.id, userId));
+  return result;
+}
+
 export async function getAllUsers(): Promise<User[]> {
   const result = await db
     .select()

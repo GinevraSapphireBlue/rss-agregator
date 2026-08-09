@@ -1,6 +1,6 @@
 import { fetchFeed } from "./parseRSS";
-import { getUser } from "./lib/db/queries_users";
-import { createFeed } from "./lib/db/querires_feeds";
+import { getUser, getUserById } from "./lib/db/queries_users";
+import { createFeed, getAllFeeds } from "./lib/db/querires_feeds";
 import { readConfig } from "./config";
 
 import type { CommandHandler } from "./comandRegistry";
@@ -30,6 +30,14 @@ export async function handlerAddFeed(_cmdName: string, name: string, url: string
 
   const newFeed = await createFeed(name, url, currentUserDb.id);
   printFeed(newFeed, currentUserDb);
+}
+
+export async function handlerListFeeds(_cmdName: string, ...args: string[]): Promise<void> {
+  const allFeeds = await getAllFeeds();
+  for (const feed of allFeeds) {
+    const creatorUser = await getUserById(feed.userId);
+    printFeed(feed, creatorUser);
+  }
 }
 
 export function printFeed(feed: Feed, user: User): void {

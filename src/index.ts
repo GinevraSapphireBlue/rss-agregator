@@ -2,7 +2,7 @@ import type { CommandsRegistry } from "./comandRegistry";
 
 import { registerCommand, runCommand } from "./comandRegistry";
 import { handlerLogin, handlerRegister, handlerReset, handlerAllUsers } from "./commandsUsers";
-import { handlerAggregateFeed, handlerAddFeed } from "./commandsFeeds";
+import { handlerAggregateFeed, handlerAddFeed, handlerListFeeds } from "./commandsFeeds";
 
 import { argv, exit } from "node:process";
 
@@ -40,5 +40,6 @@ async function registerAllCommands(cmdRegistry: CommandsRegistry): Promise<void>
     registerCommand(cmdRegistry, "users", handlerAllUsers),
     registerCommand(cmdRegistry, "agg", handlerAggregateFeed),
     registerCommand(cmdRegistry, "addfeed", handlerAddFeed),
+    registerCommand(cmdRegistry, "feeds", handlerListFeeds),
   ])
 }
