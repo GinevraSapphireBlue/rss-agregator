@@ -21,6 +21,13 @@ export async function getUser(name: string): Promise<User | undefined> {
   return result;
 }
 
+export async function getAllUsers(): Promise<User[]> {
+  const result = await db
+    .select()
+    .from(users);
+  return result;
+}
+
 export async function deleteAllUsers(): Promise<boolean> {
   const result = await db
     .delete(users)
