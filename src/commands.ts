@@ -1,5 +1,5 @@
 import { setUser, readConfig } from "./config"
-import { createUser, getUser, deleteAllUsers, getAllUsers } from "./lib/db/queries";
+import { createUser, getUser, deleteAllUsers, getAllUsers } from "./lib/db/queries_users";
 import { fetchFeed } from "./parseRSS";
 
 import type { RSSFeed } from "./parseRSS";
