@@ -1,5 +1,5 @@
 import type { CommandsRegistry } from "./commands"
-import { registerCommand, runCommand, handlerLogin, handlerRegister, handlerReset, handlerAllUsers } from "./commands";
+import { registerCommand, runCommand, handlerLogin, handlerRegister, handlerReset, handlerAllUsers, handlerAggregateFeed } from "./commands";
 import { argv, exit } from "node:process";
 
 async function main() {
@@ -8,6 +8,7 @@ async function main() {
   await registerCommand(cmdRegistry, "register", handlerRegister);
   await registerCommand(cmdRegistry, "reset", handlerReset);
   await registerCommand(cmdRegistry, "users", handlerAllUsers);
+  await registerCommand(cmdRegistry, "agg", handlerAggregateFeed);
 
   if (argv.length < 3) {
     console.log("Missing required argument, no command name provided");

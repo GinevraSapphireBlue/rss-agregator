@@ -1,5 +1,8 @@
 import { setUser, readConfig } from "./config"
 import { createUser, getUser, deleteAllUsers, getAllUsers } from "./lib/db/queries";
+import { fetchFeed } from "./parseRSS";
+
+import type { RSSFeed } from "./parseRSS";
 
 export type CommandHandler = (cmdName: string, ...args: string[]) => Promise<void>;
 export type CommandsRegistry = Record<string, CommandHandler>;
@@ -55,6 +58,14 @@ export async function handlerAllUsers(_cmdName: string, ...args: string[]): Prom
   for (const user of users) {
     const isCurrent = user.name === currentUserName;
     console.log(`* ${user.name}${isCurrent ? " (current)" : ""}`);
+  }
+}
+
+export async function handlerAggregateFeed(_cmdName: string, ...args: string[]): Promise<void> {
+  const feed = await fetchFeed("https://www.wagslane.dev/index.xml");
+  console.log(feed);
+  for (const item of feed.channel.item) {
+    console.log(item);
   }
 }
 
