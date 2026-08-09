@@ -1,22 +1,23 @@
-import type { CommandsRegistry } from "./commands"
-import { registerCommand, runCommand, handlerLogin, handlerRegister, handlerReset, handlerAllUsers, handlerAggregateFeed } from "./commands";
+import type { CommandsRegistry } from "./comandRegistry";
+
+import { registerCommand, runCommand } from "./comandRegistry";
+import { handlerLogin, handlerRegister, handlerReset, handlerAllUsers } from "./commandsUsers";
+import { handlerAggregateFeed, handlerAddFeed } from "./commandsFeeds";
+
 import { argv, exit } from "node:process";
 
 async function main() {
-  const cmdRegistry: CommandsRegistry = {};
-  await registerCommand(cmdRegistry, "login", handlerLogin);
-  await registerCommand(cmdRegistry, "register", handlerRegister);
-  await registerCommand(cmdRegistry, "reset", handlerReset);
-  await registerCommand(cmdRegistry, "users", handlerAllUsers);
-  await registerCommand(cmdRegistry, "agg", handlerAggregateFeed);
-
   if (argv.length < 3) {
     console.log("Missing required argument, no command name provided");
     process.exitCode = 1;
     exit();
   }
   const [cmdName, ...cmdArgs] = argv.slice(2);
-  
+
+  const cmdRegistry: CommandsRegistry = {};
+  await registerAllCommands(cmdRegistry);
+
+
   try {
     await runCommand(cmdRegistry, cmdName, ...cmdArgs);
   }
@@ -31,3 +32,13 @@ async function main() {
 
 await main();
 
+async function registerAllCommands(cmdRegistry: CommandsRegistry): Promise<void> {
+  await Promise.all([
+    registerCommand(cmdRegistry, "login", handlerLogin),
+    registerCommand(cmdRegistry, "register", handlerRegister),
+    registerCommand(cmdRegistry, "reset", handlerReset),
+    registerCommand(cmdRegistry, "users", handlerAllUsers),
+    registerCommand(cmdRegistry, "agg", handlerAggregateFeed),
+    registerCommand(cmdRegistry, "addfeed", handlerAddFeed),
+  ])
+}
