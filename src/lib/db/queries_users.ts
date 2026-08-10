@@ -21,7 +21,7 @@ export async function getUser(name: string): Promise<User | undefined> {
   return result;
 }
 
-export async function getUserById(userId: string): Promise<User> {
+export async function getUserById(userId: string): Promise<User | undefined> {
   const [result] = await db
     .select()
     .from(users)

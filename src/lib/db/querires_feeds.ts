@@ -3,7 +3,7 @@ import { feeds } from "./schema";
 
 import type { Feed } from "./schema";
 
-export async function createFeed(name: string, url: string, userId: string): Promise<Feed> {
+export async function createFeed(name: string, url: string, userId: string): Promise<Feed | undefined> {
   const [result] = await db
     .insert(feeds)
     .values({ name, url, userId })
