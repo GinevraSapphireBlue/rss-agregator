@@ -20,15 +20,13 @@ export async function handlerAddFeed(_cmdName: string, name: string, url: string
   }
 
   const currentUser = readConfig().currentUserName;
-  if (!currentUser) {
-    throw new Error("No user logged in");
-  }
+  if (!currentUser) throw new Error("No user logged in");
+  
   const currentUserDb = await getUser(currentUser);
-  if (!currentUserDb) {
-    throw new Error("User could not be found");
-  }
+  if (!currentUserDb) throw new Error("User could not be found");
 
   const newFeed = await createFeed(name, url, currentUserDb.id);
+  if (!newFeed) throw new Error("Feed creation failed");
   printFeed(newFeed, currentUserDb);
 }
 
@@ -36,6 +34,7 @@ export async function handlerListFeeds(_cmdName: string, ...args: string[]): Pro
   const allFeeds = await getAllFeeds();
   for (const feed of allFeeds) {
     const creatorUser = await getUserById(feed.userId);
+    if (!creatorUser) throw new Error("Getting creator of feed failed");
     printFeed(feed, creatorUser);
   }
 }

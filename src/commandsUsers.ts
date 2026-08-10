@@ -9,7 +9,7 @@ export async function handlerLogin (_cmdName: string, ...args: string[]): Promis
   }
   const name = args[0];
 
-  if (await getUser(name) === undefined) {
+  if (!await getUser(name)) {
     throw new Error("Cannot log in. User doesn't exist.");
   }
 
@@ -23,13 +23,11 @@ export async function handlerRegister(_cmdName: string, ...args: string[]): Prom
     throw new Error("Missing argument, username is required");
   }
   const name = args[0];
-  if (await getUser(name) !== undefined) {
+  if (await getUser(name)) {
     throw new Error("Cannot create user. User already exists");
   }
   const newUser = await createUser(name);
-  if (newUser === undefined) {
-    throw new Error("User creation failed");
-  }
+  if (!newUser) throw new Error("User creation failed");
   setUser(readConfig(), name);
   console.log(`User ${name} was created`);
   console.log(newUser);
@@ -37,9 +35,7 @@ export async function handlerRegister(_cmdName: string, ...args: string[]): Prom
 
 export async function handlerReset(_cmdName: string, ...args: string[]): Promise<void> {
   const success = await deleteAllUsers();
-  if (!success) {
-    throw new Error("User deletion failed");
-  }
+  if (!success) throw new Error("User deletion failed");
   console.log("All users were deleted");
 }
 
