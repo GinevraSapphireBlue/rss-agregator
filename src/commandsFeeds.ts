@@ -16,19 +16,18 @@ export async function handlerAggregateFeed(_cmdName: string, ...args: string[]):
   }
 }
 
-export async function handlerAddFeed(_cmdName: string, name: string, url: string, ...args: string[]): Promise<void> {
+export async function handlerAddFeed(_cmdName: string, user: User, name: string, url: string, ...args: string[]): Promise<void> {
   if (!name || !url) {
     throw new Error("Missing arguments, name and url are required");
   }
 
-  const currentUserDb = await getCurrentUserDbRecord();
-  const newFeed = await createFeed(name, url, currentUserDb.id);
+  const newFeed = await createFeed(name, url, user.id);
   if (!newFeed) throw new Error("Feed creation failed");
 
-  const newFeedFollow = await createFeedFollow(currentUserDb.id, newFeed.id);
+  const newFeedFollow = await createFeedFollow(user.id, newFeed.id);
   if (!newFeedFollow) throw new Error("Feed follow creation failed");
 
-  printFeed(newFeed, currentUserDb);
+  printFeed(newFeed, user);
 }
 
 export async function handlerListFeeds(_cmdName: string, ...args: string[]): Promise<void> {

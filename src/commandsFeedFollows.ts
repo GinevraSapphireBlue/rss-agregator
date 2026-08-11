@@ -7,12 +7,10 @@ import { readConfig } from "./config";
 import { getUser } from "./lib/db/queries_users";
 import { getCurrentUserDbRecord } from "./commandHelpers";
 
-export async function handlerFollowFeed(_cmdName: string, url: string, ...args: string[]): Promise<void> {
+export async function handlerFollowFeed(_cmdName: string, user: User, url: string, ...args: string[]): Promise<void> {
   if (!url) {
     throw new Error("Missing argument, url is required");
   }
-
-  const user = await getCurrentUserDbRecord();
 
   const feed = await getFeedByUrl(url);
   if (!feed) throw new Error("Feed could not be found");
@@ -23,9 +21,7 @@ export async function handlerFollowFeed(_cmdName: string, url: string, ...args: 
   console.log(`User ${newFollowFeed.userName} followed feed ${newFollowFeed.feedName}.`);
 }
 
-export async function handlerAllFollowingFeeds(_cmdName: string, ...args: string[]): Promise<void> {
-  const user = await getCurrentUserDbRecord();
-  
+export async function handlerAllFollowingFeeds(_cmdName: string, user: User, ...args: string[]): Promise<void> {
   const feedsFollows = await getFeedFollowsByUser(user.id);
   if (!feedsFollows) throw new Error("No feed follows could not be found");
   
