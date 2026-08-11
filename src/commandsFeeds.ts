@@ -5,6 +5,7 @@ import { readConfig } from "./config";
 
 import type { CommandHandler } from "./comandRegistry";
 import type { User, Feed } from "./lib/db/schema";
+import { getCurrentUserDbRecord } from "./commandHelpers";
 
 export async function handlerAggregateFeed(_cmdName: string, ...args: string[]): Promise<void> {
   const feed = await fetchFeed("https://www.wagslane.dev/index.xml");
@@ -19,12 +20,7 @@ export async function handlerAddFeed(_cmdName: string, name: string, url: string
     throw new Error("Missing arguments, name and url are required");
   }
 
-  const currentUser = readConfig().currentUserName;
-  if (!currentUser) throw new Error("No user logged in");
-  
-  const currentUserDb = await getUser(currentUser);
-  if (!currentUserDb) throw new Error("User could not be found");
-
+  const currentUserDb = await getCurrentUserDbRecord();
   const newFeed = await createFeed(name, url, currentUserDb.id);
   if (!newFeed) throw new Error("Feed creation failed");
   printFeed(newFeed, currentUserDb);

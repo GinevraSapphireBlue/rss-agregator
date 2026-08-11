@@ -5,17 +5,14 @@ import type { CommandHandler } from "./comandRegistry";
 import type { feedFollows, Feed, User } from "./lib/db/schema";
 import { readConfig } from "./config";
 import { getUser } from "./lib/db/queries_users";
+import { getCurrentUserDbRecord } from "./commandHelpers";
 
 export async function handlerFollowFeed(_cmdName: string, url: string, ...args: string[]): Promise<void> {
   if (!url) {
     throw new Error("Missing argument, url is required");
   }
 
-  const userName = readConfig().currentUserName;
-  if (!userName) throw new Error("No user logged in");
-
-  const user = await getUser(userName);
-  if (!user) throw new Error("User could not be found");
+  const user = await getCurrentUserDbRecord();
 
   const feed = await getFeedByUrl(url);
   if (!feed) throw new Error("Feed could not be found");
