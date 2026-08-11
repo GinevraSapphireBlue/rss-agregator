@@ -1,4 +1,4 @@
-import { createFeedFollow, getFeedFollowsByUser } from "./lib/db/queries_feed_follows";
+import { createFeedFollow, deleteFeedFollow, getFeedFollowsByUser } from "./lib/db/queries_feed_follows";
 import { getFeedByUrl } from "./lib/db/querires_feeds";
 
 import type { CommandHandler } from "./comandRegistry";
@@ -29,4 +29,15 @@ export async function handlerAllFollowingFeeds(_cmdName: string, user: User, ...
   for (const follow of feedsFollows) {
     console.log(`- ${follow.feedName}`);
   }
+}
+
+export async function handlerUnfollowFeed(_cmdName: string, user: User, url: string, ...args: string[]): Promise<void> {
+  if (!url) {
+    throw new Error("Missing argument, url is required");
+  }
+
+  const success = await deleteFeedFollow(user.id, url);
+  if (!success) throw new Error(`Unfollowing ${url} failed`);
+  
+  console.log(`User ${user.name} unfollowed feed ${url}`);
 }

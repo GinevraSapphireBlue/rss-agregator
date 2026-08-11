@@ -5,7 +5,7 @@ import { handlerLogin, handlerRegister, handlerReset, handlerAllUsers } from "./
 import { handlerAggregateFeed, handlerAddFeed, handlerListFeeds } from "./commandsFeeds";
 
 import { argv, exit } from "node:process";
-import { handlerAllFollowingFeeds, handlerFollowFeed } from "./commandsFeedFollows";
+import { handlerAllFollowingFeeds, handlerFollowFeed, handlerUnfollowFeed } from "./commandsFeedFollows";
 import { middlewareLoggedIn } from "./commandHelpers";
 
 async function main() {
@@ -45,5 +45,6 @@ async function registerAllCommands(cmdRegistry: CommandsRegistry): Promise<void>
     registerCommand(cmdRegistry, "feeds", handlerListFeeds),
     registerCommand(cmdRegistry, "follow", middlewareLoggedIn(handlerFollowFeed)),
     registerCommand(cmdRegistry, "following", middlewareLoggedIn(handlerAllFollowingFeeds)),
+    registerCommand(cmdRegistry, "unfollow", middlewareLoggedIn(handlerUnfollowFeed)),
   ])
 }
