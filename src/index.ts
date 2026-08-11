@@ -5,6 +5,7 @@ import { handlerLogin, handlerRegister, handlerReset, handlerAllUsers } from "./
 import { handlerAggregateFeed, handlerAddFeed, handlerListFeeds } from "./commandsFeeds";
 
 import { argv, exit } from "node:process";
+import { handlerFollowFeed } from "./commandsFeedFollows";
 
 async function main() {
   if (argv.length < 3) {
@@ -41,5 +42,6 @@ async function registerAllCommands(cmdRegistry: CommandsRegistry): Promise<void>
     registerCommand(cmdRegistry, "agg", handlerAggregateFeed),
     registerCommand(cmdRegistry, "addfeed", handlerAddFeed),
     registerCommand(cmdRegistry, "feeds", handlerListFeeds),
+    registerCommand(cmdRegistry, "follow", handlerFollowFeed),
   ])
 }

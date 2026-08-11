@@ -1,3 +1,5 @@
+import { eq } from "drizzle-orm";
+
 import { db } from "./index";
 import { feeds } from "./schema";
 
@@ -15,5 +17,13 @@ export async function getAllFeeds(): Promise<Feed[]> {
   const result = await db
     .select()
     .from(feeds);
+  return result;
+}
+
+export async function getFeedByUrl(url: string): Promise<Feed | undefined> {
+  const [result] = await db
+    .select()
+    .from(feeds)
+    .where(eq(feeds.url, url));
   return result;
 }
