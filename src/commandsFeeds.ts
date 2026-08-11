@@ -1,6 +1,7 @@
 import { fetchFeed } from "./parseRSS";
 import { getUserById } from "./lib/db/queries_users";
 import { createFeed, getAllFeeds, getNextFeedToFetch, markFeedFetched } from "./lib/db/queries_feeds";
+import { createPost, getPostsForUser } from "./lib/db/queries_posts";
 
 import type { User, Feed } from "./lib/db/schema";
 import { createFeedFollow } from "./lib/db/queries_feed_follows";
@@ -51,6 +52,24 @@ export async function handlerListFeeds(_cmdName: string, ...args: string[]): Pro
   }
 }
 
+export async function handlerBrowsePosts(_cmdName: string, user: User, limit: string, ...args: string[]): Promise<void> {
+  let maxPosts = 2;
+  try {
+    maxPosts = parseInt(limit, 10);
+  } catch {
+    console.log(`maxPosts set to default value (${maxPosts})`);
+  }
+  const posts = await getPostsForUser(user.id, maxPosts);
+
+  console.log(`Posts fetched for user ${user.name}:`);
+  for (const post of posts) {
+    console.log(`${post.title} (${post.url})`);
+    console.log(post.description);
+    console.log(`Published at ${post.publishedAt}`);
+    console.log();
+  }
+}
+
 export function printFeed(feed: Feed, user: User): void {
   console.log(`Feed ${feed.name} from ${feed.url} created at ${feed.createdAt} by user ${user.name}`);
 }
@@ -62,6 +81,14 @@ async function scrapeFeeds(): Promise<void> {
   const feedContent = await fetchFeed(nextFeed.url);
   const success = await markFeedFetched(nextFeed.id);
   if (!success) throw new Error(`Feed ${nextFeed.name} at ${nextFeed.url} could not be marked as fetched.`);
+
+  for(const item of feedContent.channel.item) {
+    let publishedDate = new Date(item.pubDate);
+    if (!publishedDate)
+      publishedDate = new Date();
+    const newPost = await createPost(item.title, item.link, item.description, publishedDate, nextFeed.id);
+    if (!newPost) console.log(`Post ${item.title} from ${item.link} could not be saved`);
+  }
 
   console.log(feedContent.channel.title);
   for (const item of feedContent.channel.item) {
