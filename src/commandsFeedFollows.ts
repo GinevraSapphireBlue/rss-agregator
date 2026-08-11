@@ -1,4 +1,4 @@
-import { createFeedFollow } from "./lib/db/queries_feed_follows";
+import { createFeedFollow, getFeedFollowsByUser } from "./lib/db/queries_feed_follows";
 import { getFeedByUrl } from "./lib/db/querires_feeds";
 
 import type { CommandHandler } from "./comandRegistry";
@@ -21,4 +21,16 @@ export async function handlerFollowFeed(_cmdName: string, url: string, ...args: 
   if (!newFollowFeed) throw new Error("Feed could not be followed");
 
   console.log(`User ${newFollowFeed.userName} followed feed ${newFollowFeed.feedName}.`);
+}
+
+export async function handlerAllFollowingFeeds(_cmdName: string, ...args: string[]): Promise<void> {
+  const user = await getCurrentUserDbRecord();
+  
+  const feedsFollows = await getFeedFollowsByUser(user.id);
+  if (!feedsFollows) throw new Error("No feed follows could not be found");
+  
+  console.log(`User ${user.name} follows: `);
+  for (const follow of feedsFollows) {
+    console.log(`- ${follow.feedName}`);
+  }
 }
