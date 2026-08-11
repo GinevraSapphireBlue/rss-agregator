@@ -1,7 +1,7 @@
-import { eq } from "drizzle-orm";
+import { desc, eq, sql } from "drizzle-orm";
 
 import { db } from "./index";
-import { feeds } from "./schema";
+import { feedFollows, feeds } from "./schema";
 
 import type { Feed } from "./schema";
 
@@ -25,5 +25,25 @@ export async function getFeedByUrl(url: string): Promise<Feed | undefined> {
     .select()
     .from(feeds)
     .where(eq(feeds.url, url));
+  return result;
+}
+
+export async function markFeedFetched(feedId: string): Promise<boolean> {
+  const [result] = await db
+    .update(feeds)
+    .set({ lastFetchedAt: new Date(), updatedAt: new Date() })
+    .where(eq(feeds.id, feedId))
+    .returning();
+
+  return result !== undefined;
+}
+
+export async function getNextFeedToFetch(): Promise<Feed | undefined> {
+  const [result] = await db
+    .select()
+    .from(feeds)
+    .orderBy(sql`${feeds.lastFetchedAt} ASC NULLS FIRST`)
+    .limit(1);
+
   return result;
 }
