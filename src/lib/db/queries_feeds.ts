@@ -1,16 +1,22 @@
-import { desc, eq, sql } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 
 import { db } from "./index";
-import { feedFollows, feeds } from "./schema";
+import { feeds } from "./schema";
+import { isUniqueViolation } from "./helpers";
 
 import type { Feed } from "./schema";
 
 export async function createFeed(name: string, url: string, userId: string): Promise<Feed | undefined> {
-  const [result] = await db
-    .insert(feeds)
-    .values({ name, url, userId })
-    .returning();
-  return result;
+  try {
+    const [result] = await db
+      .insert(feeds)
+      .values({ name, url, userId })
+      .returning();
+
+      return result;
+  } catch (err){
+    if (isUniqueViolation(err))  return undefined;
+  }
 }
 
 export async function getAllFeeds(): Promise<Feed[]> {
