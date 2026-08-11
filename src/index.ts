@@ -1,12 +1,12 @@
-import type { CommandsRegistry } from "./comandRegistry";
+import { argv, exit } from "node:process";
 
 import { registerCommand, runCommand } from "./comandRegistry";
 import { handlerLogin, handlerRegister, handlerReset, handlerAllUsers } from "./commandsUsers";
 import { handlerAggregateFeed, handlerAddFeed, handlerListFeeds } from "./commandsFeeds";
-
-import { argv, exit } from "node:process";
 import { handlerAllFollowingFeeds, handlerFollowFeed, handlerUnfollowFeed } from "./commandsFeedFollows";
 import { middlewareLoggedIn } from "./commandHelpers";
+
+import type { CommandsRegistry } from "./comandRegistry";
 
 async function main() {
   if (argv.length < 3) {

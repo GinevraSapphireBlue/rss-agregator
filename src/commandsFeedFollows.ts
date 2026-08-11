@@ -1,11 +1,7 @@
 import { createFeedFollow, deleteFeedFollow, getFeedFollowsByUser } from "./lib/db/queries_feed_follows";
 import { getFeedByUrl } from "./lib/db/querires_feeds";
 
-import type { CommandHandler } from "./comandRegistry";
-import type { feedFollows, Feed, User } from "./lib/db/schema";
-import { readConfig } from "./config";
-import { getUser } from "./lib/db/queries_users";
-import { getCurrentUserDbRecord } from "./commandHelpers";
+import type { User } from "./lib/db/schema";
 
 export async function handlerFollowFeed(_cmdName: string, user: User, url: string, ...args: string[]): Promise<void> {
   if (!url) {

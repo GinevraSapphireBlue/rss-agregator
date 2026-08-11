@@ -1,8 +1,6 @@
 import { setUser, readConfig } from "./config"
 import { createUser, getUser, deleteAllUsers, getAllUsers } from "./lib/db/queries_users";
 
-import type { CommandHandler } from "./comandRegistry";
-
 export async function handlerLogin (_cmdName: string, ...args: string[]): Promise<void> {
   if (args.length === 0) {
     throw new Error("Missing argument, username is required");
