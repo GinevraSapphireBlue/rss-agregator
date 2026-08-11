@@ -6,6 +6,7 @@ import { readConfig } from "./config";
 import type { CommandHandler } from "./comandRegistry";
 import type { User, Feed } from "./lib/db/schema";
 import { getCurrentUserDbRecord } from "./commandHelpers";
+import { createFeedFollow } from "./lib/db/queries_feed_follows";
 
 export async function handlerAggregateFeed(_cmdName: string, ...args: string[]): Promise<void> {
   const feed = await fetchFeed("https://www.wagslane.dev/index.xml");
@@ -23,6 +24,10 @@ export async function handlerAddFeed(_cmdName: string, name: string, url: string
   const currentUserDb = await getCurrentUserDbRecord();
   const newFeed = await createFeed(name, url, currentUserDb.id);
   if (!newFeed) throw new Error("Feed creation failed");
+
+  const newFeedFollow = await createFeedFollow(currentUserDb.id, newFeed.id);
+  if (!newFeedFollow) throw new Error("Feed follow creation failed");
+
   printFeed(newFeed, currentUserDb);
 }
 
