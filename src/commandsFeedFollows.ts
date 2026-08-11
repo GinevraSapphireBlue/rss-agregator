@@ -1,5 +1,5 @@
 import { createFeedFollow, deleteFeedFollow, getFeedFollowsByUser } from "./lib/db/queries_feed_follows";
-import { getFeedByUrl } from "./lib/db/querires_feeds";
+import { getFeedByUrl } from "./lib/db/queries_feeds";
 
 import type { User } from "./lib/db/schema";
 

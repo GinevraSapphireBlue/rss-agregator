@@ -1,6 +1,6 @@
 import { fetchFeed } from "./parseRSS";
 import { getUserById } from "./lib/db/queries_users";
-import { createFeed, getAllFeeds, getNextFeedToFetch, markFeedFetched } from "./lib/db/querires_feeds";
+import { createFeed, getAllFeeds, getNextFeedToFetch, markFeedFetched } from "./lib/db/queries_feeds";
 
 import type { User, Feed } from "./lib/db/schema";
 import { createFeedFollow } from "./lib/db/queries_feed_follows";
